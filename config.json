@@ -1,0 +1,21 @@
+{
+  "games": [
+    "The Sims 4",
+    "Spa Day",
+    "City Living",
+    "Eco Lifestyle",
+    "Snowy Escape",
+    "Cottage Living",
+    "Cats & Dogs",
+    "Island Living",
+    "Get Together",
+    "High School Years",
+    "Outdoor Retreat",
+    "StrangerVille",
+    "Get Famous"
+  ],
+  "disabled_traits": [
+    "Active",
+    "Cheerful"
+  ]
+}
