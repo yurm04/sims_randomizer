@@ -1,0 +1,130 @@
+packs = [
+    "The Sims 4",
+    "Spa Day",
+    "City Living",
+    "Eco Lifestyle",
+    "Snowy Escape",
+    "Cottage Living",
+    "Cats & Dogs",
+    "Island Living",
+    "Get Together",
+    "High School Years",
+    "Outdoor Retreat",
+    "StrangerVille",
+    "Get Famous"
+]
+
+
+traitsbypack = {
+    "The Sims 4": [
+        "Active",
+        "Cheerful",
+        "Creative",
+        "Genius",
+        "Gloomy",
+        "Goofball",
+        "Hot-Headed",
+        "Romantic",
+        "Self-Assured",
+        "Art Lover",
+        "Bookworm",
+        "Foodie",
+        "Geek",
+        "Music Lover",
+        "Perfectionist",
+        "Ambitious",
+        "Childish",
+        "Clumsy",
+        "Erratic",
+        "Glutton",
+        "Kleptomaniac",
+        "Lazy",
+        "Loves Outdoors",
+        "Materialistic",
+        "Neat",
+        "Slob",
+        "Snob",
+        "Vegetarian",
+        "Bro",
+        "Evil",
+        "Family-oriented",
+        "Good",
+        "Hates Children",
+        "Jealous",
+        "Loner",
+        "Loyal",
+        "Mean",
+        "Noncommittal",
+        "Outgoing"
+    ],
+    "Spa Day": [
+    "High Maintenance"
+    ],
+    "City Living": [
+        "Unflirty"
+    ],
+    "Eco Lifestyle": [
+        "Maker",
+        "Freegan",
+        "Green Fiend",
+        "Recycle Disciple"
+    ],
+    "Snowy Escape": [
+        "Adventurous",
+        "Proper"
+    ],
+    "Cottage Living": [
+        "Animal Enthusiast",
+        "Lactose Intolerant"
+    ],
+    "Cats & Dogs": [
+        "Cat Lover",
+        "Dog Lover"
+    ],
+    "Island Living": [
+        "Child of the Islands",
+        "Child of the Ocean"
+    ],
+    "Get Together": [
+        "Dance Machine",
+        "Insider"
+    ],
+    "High School Years": [
+        "Overachiever",
+        "Party Animal",
+        "Socially Awkward"
+    ],
+    "Outdoor Retreat": [
+        "Squeamish"
+    ],
+    "StrangerVille": [
+        "Paranoid"
+    ],
+    "Get Famous": [
+        "Self-Absorbed"
+    ]
+}
+
+
+
+socialTraits.forEach(t => {
+    
+    const rows = Array.from(t.childNodes).filter(e => e.nodeName == 'TD')
+    const traitName = rows[1].querySelector('a').innerText
+    const packName = rows[3].querySelector('a').title
+
+    if (traitsByPack[packName]) {
+        traitsByPack[packName].push(traitName)
+    } else {
+        traitsByPack[packName] = [traitName]
+    }
+    
+    // console.log(rows[3].querySelector('a').title)
+    // console.log(rows[1].querySelector('a').innerText, '=>', rows[3].querySelector('a').title)
+    
+})
+console.log(traitsByPack)
+
+
+
+const socialTraits = Array.from($0.childNodes).filter(t => t.nodeName == 'TR')
