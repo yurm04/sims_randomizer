@@ -1,89 +1,91 @@
 {
-  "The Sims 4": [
-    "Active",
-    "Cheerful",
-    "Creative",
-    "Genius",
-    "Gloomy",
-    "Goofball",
-    "Hot-Headed",
-    "Romantic",
-    "Self-Assured",
-    "Art Lover",
-    "Bookworm",
-    "Foodie",
-    "Geek",
-    "Music Lover",
-    "Perfectionist",
-    "Ambitious",
-    "Childish",
-    "Clumsy",
-    "Erratic",
-    "Glutton",
-    "Kleptomaniac",
-    "Lazy",
-    "Loves Outdoors",
-    "Materialistic",
-    "Neat",
-    "Slob",
-    "Snob",
-    "Vegetarian",
-    "Bro",
-    "Evil",
-    "Family-oriented",
-    "Good",
-    "Hates Children",
-    "Jealous",
-    "Loner",
-    "Loyal",
-    "Mean",
-    "Noncommittal",
-    "Outgoing"
-  ],
-  "Spa Day": [
-    "High Maintenance"
-  ],
-  "City Living": [
-    "Unflirty"
-  ],
-  "Eco Lifestyle": [
-    "Maker",
-    "Freegan",
-    "Green Fiend",
-    "Recycle Disciple"
-  ],
-  "Snowy Escape": [
-    "Adventurous",
-    "Proper"
-  ],
-  "Cottage Living": [
-    "Animal Enthusiast",
-    "Lactose Intolerant"
-  ],
-  "Cats & Dogs": [
-    "Cat Lover",
-    "Dog Lover"
-  ],
-  "Island Living": [
-    "Child of the Islands",
-    "Child of the Ocean"
-  ],
-  "Get Together": [
-    "Dance Machine",
-    "Insider"
-  ],
-  "High School Years": [
-    "Overachiever",
-    "Party Animal",
-    "Socially Awkward"
-  ],
-  "Outdoor Retreat": [
-    "Squeamish"
-  ],
-  "StrangerVille": [
-    "Paranoid"
-  ],
-  "Get Famous": [
-    "Self-Absorbed"
-  ]
+  "games": {
+    "The Sims 4": [
+      "Active",
+      "Cheerful",
+      "Creative",
+      "Genius",
+      "Gloomy",
+      "Goofball",
+      "Hot-Headed",
+      "Romantic",
+      "Self-Assured",
+      "Art Lover",
+      "Bookworm",
+      "Foodie",
+      "Geek",
+      "Music Lover",
+      "Perfectionist",
+      "Ambitious",
+      "Childish",
+      "Clumsy",
+      "Erratic",
+      "Glutton",
+      "Kleptomaniac",
+      "Lazy",
+      "Loves Outdoors",
+      "Materialistic",
+      "Neat",
+      "Slob",
+      "Snob",
+      "Vegetarian",
+      "Bro",
+      "Evil",
+      "Family-oriented",
+      "Good",
+      "Hates Children",
+      "Jealous",
+      "Loner",
+      "Loyal",
+      "Mean",
+      "Noncommittal",
+      "Outgoing"
+    ],
+    "Spa Day": [
+      "High Maintenance"
+    ],
+    "City Living": [
+      "Unflirty"
+    ],
+    "Eco Lifestyle": [
+      "Maker",
+      "Freegan",
+      "Green Fiend",
+      "Recycle Disciple"
+    ],
+    "Snowy Escape": [
+      "Adventurous",
+      "Proper"
+    ],
+    "Cottage Living": [
+      "Animal Enthusiast",
+      "Lactose Intolerant"
+    ],
+    "Cats & Dogs": [
+      "Cat Lover",
+      "Dog Lover"
+    ],
+    "Island Living": [
+      "Child of the Islands",
+      "Child of the Ocean"
+    ],
+    "Get Together": [
+      "Dance Machine",
+      "Insider"
+    ],
+    "High School Years": [
+      "Overachiever",
+      "Party Animal",
+      "Socially Awkward"
+    ],
+    "Outdoor Retreat": [
+      "Squeamish"
+    ],
+    "StrangerVille": [
+      "Paranoid"
+    ],
+    "Get Famous": [
+      "Self-Absorbed"
+    ]
+  }
 }

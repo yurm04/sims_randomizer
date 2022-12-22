@@ -3,7 +3,8 @@ Randomize output traits based on the enabled games in the config files
 
 ## Plan
 - read a config file with the enabled games + traits
-- from the enabled traits randomly select 5
+- create a list of traits from enabled games, exclude disabled traits
+- from the list randomly select 5 traits to output to stdout
 
 ```
 {
