@@ -1,0 +1,2 @@
+packs=["ChefHustle", "BaseGame"]
+excluded_traits=["LactoseIntolerant", "Glutton"]
