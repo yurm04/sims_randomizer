@@ -12,8 +12,7 @@ mod trait_randomizer {
     pub mod randomize;
 }
 
-use crate::trait_randomizer::randomize::randomize;
-use crate::ui::app_view::app_view;
+use crate::{trait_randomizer::randomize::randomize, ui::app_view::app_view};
 
 fn main() {
     let randomized_traits = randomize();
