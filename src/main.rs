@@ -1,6 +1,6 @@
 use floem::{
-    event::EventListener, kurbo::Size, view::View, views::Decorators, window::WindowConfig,
-    Application,
+    event::EventListener, kurbo::Size, reactive::provide_context, view::View, views::Decorators,
+    window::WindowConfig, Application,
 };
 
 mod ui {
@@ -15,6 +15,12 @@ mod trait_randomizer {
 use crate::{trait_randomizer::randomize::randomize, ui::app_view::app_view};
 
 fn main() {
+    /*
+     * TODO
+     * how do i share state across the app so that I can know which games are checked?
+     */
+    let context = provide_context(vec!["BaseGame"]);
+
     let randomized_traits = randomize();
     println!("{:?}", randomized_traits);
     let view = app_view();

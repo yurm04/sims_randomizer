@@ -9,8 +9,8 @@ use toml::from_str;
 use strum::IntoEnumIterator; // 0.17.1
 use strum_macros::EnumIter; // 0.17.1
 
-#[derive(Debug, Deserialize, Copy, Clone)]
-enum GamePacks {
+#[derive(Debug, Deserialize, Copy, Clone, EnumIter)]
+pub enum GamePacks {
     BaseGame,
     GardenStuff,
     ChefHustle,
