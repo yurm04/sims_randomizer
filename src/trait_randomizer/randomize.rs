@@ -17,7 +17,7 @@ pub enum GamePacks {
 }
 
 // enums are always at root level
-#[derive(Debug, Copy, Clone, EnumIter, Deserialize)]
+#[derive(Debug, Copy, Clone, EnumIter, Deserialize, Eq, PartialEq, Hash)]
 pub enum AllTraits {
     BaseGameCheerful,
     BaseGameMean,
