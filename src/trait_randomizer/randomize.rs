@@ -7,9 +7,9 @@ use std::{
 use toml::from_str;
 
 use strum::IntoEnumIterator; // 0.17.1
-use strum_macros::EnumIter; // 0.17.1
+use strum_macros::{Display, EnumIter}; // 0.17.1
 
-#[derive(Debug, Deserialize, Copy, Clone, EnumIter)]
+#[derive(Debug, Deserialize, Copy, Clone, EnumIter, PartialEq, Eq)]
 pub enum GamePacks {
     BaseGame,
     GardenStuff,
