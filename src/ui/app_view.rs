@@ -22,6 +22,8 @@ use crate::ui::list_item::list_item;
 pub type PackSignals = RwSignal<Vec<(GamePacks, bool)>>;
 pub type SelectedGamePacks = RwSignal<Vec<GamePacks>>;
 pub type EnabledGameTraits = RwSignal<Vec<AllTraits>>;
+// TODO
+// pub type EnabledGameTraits = RwSignal<Vec<(AllTraits, bool)>>;
 
 fn handle_select_game_pack(game_pack: GamePacks, selected: bool) {
     let game_pack_traits = AllTraits::iter().collect::<Vec<AllTraits>>();
@@ -73,46 +75,65 @@ fn handle_select_game_pack(game_pack: GamePacks, selected: bool) {
     }
 }
 
+fn handle_select_game_trait(game_trait: AllTraits, selected: bool) {
+    let enabled_game_traits =
+        use_context::<EnabledGameTraits>().expect("Requires enabled AllTraits context");
+
+    // TODO: map and set found item to `selected`
+    if selected {
+        enabled_game_traits.update(|game_traits| game_traits.push(game_trait));
+    } else {
+        enabled_game_traits.update(|game_traits| {
+            *game_traits = game_traits
+                .iter()
+                .filter(|trait_name| **trait_name != game_trait)
+                .map(|trait_name| *trait_name)
+                .collect::<Vec<AllTraits>>();
+        })
+    }
+}
+
 pub fn app_view() -> impl View {
     let output = create_rw_signal(String::new());
     let game_packs = GamePacks::iter().collect::<Vec<GamePacks>>();
-    let selected_game_packs: SelectedGamePacks = create_rw_signal(Vec::new());
-    let enabled_game_traits: EnabledGameTraits = create_rw_signal(Vec::new());
+    let selected_game_packs: SelectedGamePacks = create_rw_signal(vec![GamePacks::BaseGame]);
+    let default_base_game_traits = AllTraits::iter()
+        .filter(|game_trait_name| game_trait_name.to_string().starts_with("BaseGame"))
+        .collect::<Vec<AllTraits>>();
+    let enabled_game_traits: EnabledGameTraits = create_rw_signal(default_base_game_traits);
 
     provide_context(selected_game_packs);
     provide_context(enabled_game_traits);
 
-    // TODO turn this into a tuple for states: is_visible and is_checked. Do it like packs
-    // let trait_list = create_rw_signal(AllTraits::iter().collect::<Vec<AllTraits>>());
-
     h_stack((
         v_stack((
             label(|| "Game Packs").style(|s| s.font_size(13.0).margin_bottom(10)),
-            v_stack_from_iter(
-                game_packs
-                    .iter()
-                    .map(|game_pack| list_item(*game_pack, handle_select_game_pack)),
-            )
+            v_stack_from_iter(game_packs.iter().map(|game_pack| {
+                let is_base_game = game_pack.to_string() == String::from("BaseGame");
+                list_item(
+                    *game_pack,
+                    handle_select_game_pack,
+                    is_base_game,
+                    is_base_game,
+                )
+            }))
             .style(|s| s.gap(0, 5)),
             button(|| "Shuffle traits").on_click_cont(move |_| {
-                // output.set(format!(
-                //     "{:#?}",
-                //     randomize(
-                //         packs
-                //             .get()
-                //             .iter()
-                //             .filter(|(_, is_checked)| *is_checked)
-                //             .map(|(label, _)| *label)
-                //             .collect::<Vec<GamePacks>>()
-                //     )
-                // ));
+                output.set(format!(
+                    "{:#?}",
+                    randomize(
+                        // TODO: filter out the false (not selected traits)
+                        enabled_game_traits.get()
+                    )
+                ));
             }),
         ))
         .style(|s| s.width_full().margin(5)),
         v_stack((dyn_stack(
             move || enabled_game_traits.get(),
             move |trait_name| *trait_name,
-            move |trait_name| list_item(trait_name, |_, _| {}),
+            // TODO: fix tuple (trait_name, _)
+            move |trait_name| list_item(trait_name, handle_select_game_trait, true, false),
         )
         .style(|s| s.flex_col().gap(0, 5)),)),
         label(move || output.get()),

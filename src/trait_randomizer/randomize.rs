@@ -68,38 +68,32 @@ fn read_config_file() -> ConfigFile {
     from_str(&config).unwrap()
 }
 
-pub fn randomize(selected_packs: Vec<GamePacks>) -> Vec<String> {
-    let config = read_config_file();
+pub fn randomize(enabled_game_traits: Vec<AllTraits>) -> Vec<String> {
+    println!("{:?}", enabled_game_traits);
+    let mut personality_traits = enabled_game_traits
+        .iter()
+        .map(|game_trait| {
+            let mut game_trait_name = format!("{:?}", game_trait);
 
-    let mut personality_traits: Vec<String> = Vec::new();
-
-    selected_packs.iter().for_each(|p| {
-        let pack = format!("{:?}", p);
-
-        for t in AllTraits::iter() {
-            let name = format!("{t}");
-            if name.starts_with(&pack) && !config.excluded_traits.contains(&name.replace(&pack, ""))
-            {
-                let trait_name = name.replace(&pack, "");
-                personality_traits.push(trait_name);
+            for game_pack in GamePacks::iter() {
+                let game_pack_name = format!("{game_pack}");
+                if game_trait_name.starts_with(&game_pack_name) {
+                    game_trait_name = game_trait_name.replace(&game_pack_name, "");
+                }
             }
-        }
-    });
+
+            game_trait_name
+        })
+        .collect::<Vec<String>>();
 
     let mut range = thread_rng();
 
     personality_traits.shuffle(&mut range);
 
     let first_three = vec![
-        personality_traits
-            .pop()
-            .unwrap_or_else(|| format!("{:?}", AllTraits::BaseGameMean).replace("BaseGame", "")),
-        personality_traits
-            .pop()
-            .unwrap_or(format!("{:?}", AllTraits::BaseGameMean).replace("BaseGame", "")),
-        personality_traits
-            .pop()
-            .unwrap_or(format!("{:?}", AllTraits::BaseGameMean).replace("BaseGame", "")),
+        personality_traits.pop().unwrap(),
+        personality_traits.pop().unwrap(),
+        personality_traits.pop().unwrap(),
     ];
 
     first_three
