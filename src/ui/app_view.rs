@@ -9,6 +9,7 @@ use floem::{
 use strum::IntoEnumIterator; // 0.17.1
 
 use crate::trait_randomizer::randomize::{randomize, AllTraits, GamePacks};
+use crate::ui::heading::heading;
 use crate::ui::list_item::list_item;
 
 /**
@@ -19,11 +20,9 @@ use crate::ui::list_item::list_item;
  * profit!
  */
 
-pub type PackSignals = RwSignal<Vec<(GamePacks, bool)>>;
 pub type SelectedGamePacks = RwSignal<Vec<GamePacks>>;
-pub type EnabledGameTraits = RwSignal<Vec<AllTraits>>;
-// TODO
-// pub type EnabledGameTraits = RwSignal<Vec<(AllTraits, bool)>>;
+type GameTraitsStatus = Vec<(AllTraits, bool)>;
+pub type EnabledGameTraits = RwSignal<GameTraitsStatus>;
 
 fn handle_select_game_pack(game_pack: GamePacks, selected: bool) {
     let game_pack_traits = AllTraits::iter().collect::<Vec<AllTraits>>();
@@ -44,8 +43,8 @@ fn handle_select_game_pack(game_pack: GamePacks, selected: bool) {
 
                     game_trait_name.contains(&game_pack_name)
                 })
-                .map(|game_trait| *game_trait)
-                .collect::<Vec<AllTraits>>();
+                .map(|game_trait| (*game_trait, selected))
+                .collect::<GameTraitsStatus>();
 
             game_traits.append(&mut mapped_game_traits);
         });
@@ -68,7 +67,7 @@ fn handle_select_game_pack(game_pack: GamePacks, selected: bool) {
                     !game_trait_name.contains(&game_pack_name)
                 })
                 .map(|game_trait| *game_trait)
-                .collect::<Vec<AllTraits>>();
+                .collect::<GameTraitsStatus>();
 
             *game_traits = mapped_game_traits;
         })
@@ -79,27 +78,28 @@ fn handle_select_game_trait(game_trait: AllTraits, selected: bool) {
     let enabled_game_traits =
         use_context::<EnabledGameTraits>().expect("Requires enabled AllTraits context");
 
-    // TODO: map and set found item to `selected`
-    if selected {
-        enabled_game_traits.update(|game_traits| game_traits.push(game_trait));
-    } else {
-        enabled_game_traits.update(|game_traits| {
-            *game_traits = game_traits
-                .iter()
-                .filter(|trait_name| **trait_name != game_trait)
-                .map(|trait_name| *trait_name)
-                .collect::<Vec<AllTraits>>();
-        })
-    }
+    enabled_game_traits.update(|game_traits| {
+        *game_traits = game_traits
+            .iter()
+            .map(|current_game_trait| {
+                if current_game_trait.0 == game_trait {
+                    (current_game_trait.0, selected)
+                } else {
+                    *current_game_trait
+                }
+            })
+            .collect::<GameTraitsStatus>();
+    });
 }
 
 pub fn app_view() -> impl View {
-    let output = create_rw_signal(String::new());
+    let output: RwSignal<Vec<String>> = create_rw_signal(Vec::new());
     let game_packs = GamePacks::iter().collect::<Vec<GamePacks>>();
     let selected_game_packs: SelectedGamePacks = create_rw_signal(vec![GamePacks::BaseGame]);
     let default_base_game_traits = AllTraits::iter()
         .filter(|game_trait_name| game_trait_name.to_string().starts_with("BaseGame"))
-        .collect::<Vec<AllTraits>>();
+        .map(|game_traits| (game_traits, true))
+        .collect::<GameTraitsStatus>();
     let enabled_game_traits: EnabledGameTraits = create_rw_signal(default_base_game_traits);
 
     provide_context(selected_game_packs);
@@ -107,7 +107,7 @@ pub fn app_view() -> impl View {
 
     h_stack((
         v_stack((
-            label(|| "Game Packs").style(|s| s.font_size(13.0).margin_bottom(10)),
+            heading(String::from("Game Packs")),
             v_stack_from_iter(game_packs.iter().map(|game_pack| {
                 let is_base_game = game_pack.to_string() == String::from("BaseGame");
                 list_item(
@@ -119,25 +119,39 @@ pub fn app_view() -> impl View {
             }))
             .style(|s| s.gap(0, 5)),
             button(|| "Shuffle traits").on_click_cont(move |_| {
-                output.set(format!(
-                    "{:#?}",
-                    randomize(
-                        // TODO: filter out the false (not selected traits)
-                        enabled_game_traits.get()
-                    )
+                output.set(randomize(
+                    enabled_game_traits
+                        .get()
+                        .iter()
+                        .filter(|(_, selected)| *selected)
+                        .map(|(game_trait_name, _)| *game_trait_name)
+                        .collect::<Vec<AllTraits>>(),
                 ));
             }),
         ))
-        .style(|s| s.width_full().margin(5)),
-        v_stack((dyn_stack(
-            move || enabled_game_traits.get(),
-            move |trait_name| *trait_name,
-            // TODO: fix tuple (trait_name, _)
-            move |trait_name| list_item(trait_name, handle_select_game_trait, true, false),
+        .style(|s| s.width_full().gap(0, 5)),
+        v_stack((
+            heading(String::from("Game Traits")),
+            scroll(
+                dyn_stack(
+                    move || enabled_game_traits.get(),
+                    move |trait_name| *trait_name,
+                    move |(trait_name, selected)| {
+                        list_item(trait_name, handle_select_game_trait, selected, false)
+                    },
+                )
+                .style(|s| s.flex_col().gap(0, 5)),
+            )
+            .style(|s| s.height_full().class(scroll::Handle, scrollbar_styles)),
+        )),
+        dyn_stack(
+            move || output.get(),
+            move |randomized_traits| randomized_traits.clone(),
+            move |trait_name| label(move || trait_name.clone()),
         )
-        .style(|s| s.flex_col().gap(0, 5)),)),
-        label(move || output.get()),
+        .style(|s| s.flex_col()),
     ))
+    .style(|s| s.gap(15, 0).margin(10))
 }
 
 fn scrollbar_styles(s: Style) -> Style {
@@ -148,43 +162,3 @@ fn scrollbar_styles(s: Style) -> Style {
         .active(|s| s.background(SCROLL_BAR_COLOR))
         .set(scroll::Thickness, 5.0)
 }
-
-// scroll(
-//     // TODO bug: the dyn stack is not
-//     // TODO rethink the architecture of this. Triggers maybe?
-//     dyn_stack(
-//         move || {
-//             // let packs = packs.clone();
-//             // trait_list.get().into_iter().filter(move |trait_name| {
-//             //     let trait_name = trait_name.clone();
-//             //     packs.iter().any(move |(pack_name, checked)| {
-//             //         checked.get()
-//             //             && trait_name
-//             //                 .to_string()
-//             //                 .starts_with(&pack_name.to_string().clone())
-//             //     })
-//             // })
-//             trait_list
-//                 .get()
-//                 .into_iter()
-//                 .filter(move |game_trait| {
-//                     packs
-//                         .get()
-//                         .iter()
-//                         .find_map(|pack| {
-//                             if game_trait.to_string().starts_with(&pack.0.to_string()) {
-//                                 Some(pack.1)
-//                             } else {
-//                                 None
-//                             }
-//                         })
-//                         .unwrap_or(false)
-//                 })
-//                 .collect::<Vec<AllTraits>>()
-//         },
-//         move |trait_name| *trait_name,
-//         move |trait_name| list_item(trait_name, |_, _| true),
-//     )
-//     .style(|s| s.flex_col().gap(0, 5)),
-// )
-// .style(|s| s.height_full().class(scroll::Handle, scrollbar_styles)),

@@ -5,6 +5,7 @@ use floem::{
 
 mod ui {
     pub mod app_view;
+    pub mod heading;
     pub mod list_item;
 }
 

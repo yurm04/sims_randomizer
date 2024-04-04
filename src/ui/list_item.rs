@@ -1,14 +1,12 @@
 use std::sync::Arc;
 
 use floem::{
-    reactive::{create_rw_signal, use_context, RwSignal},
+    reactive::create_rw_signal,
     view::View,
     views::{h_stack, label, Decorators},
     widgets::checkbox,
 };
 use std::fmt::Display;
-
-use crate::ui::app_view::PackSignals;
 
 pub fn list_item<T: Display + PartialEq + Clone + Copy + 'static>(
     item_label: T,

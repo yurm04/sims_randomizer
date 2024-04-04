@@ -1,13 +1,9 @@
 use rand::{seq::SliceRandom, thread_rng};
 use serde::Deserialize;
-use std::{
-    fmt::{Display, Formatter, Result},
-    fs,
-};
-use toml::from_str;
+use std::fmt::{Display, Formatter, Result};
 
 use strum::IntoEnumIterator; // 0.17.1
-use strum_macros::{Display, EnumIter}; // 0.17.1
+use strum_macros::EnumIter; // 0.17.1
 
 #[derive(Debug, Deserialize, Copy, Clone, EnumIter, PartialEq, Eq)]
 pub enum GamePacks {
@@ -37,15 +33,12 @@ pub enum AllTraits {
 #[derive(Debug, Deserialize)]
 struct ConfigFile {
     _packs: Vec<GamePacks>,
-    #[serde(default)]
-    excluded_traits: Vec<String>,
 }
 
 impl Default for ConfigFile {
     fn default() -> Self {
         Self {
             _packs: vec![GamePacks::BaseGame],
-            excluded_traits: vec![],
         }
     }
 }
@@ -60,12 +53,6 @@ impl Display for GamePacks {
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(f, "{:?}", self)
     }
-}
-
-fn read_config_file() -> ConfigFile {
-    let config =
-        fs::read_to_string("./config.toml").unwrap_or(String::from("packs=[\"BaseGameTraits\"]"));
-    from_str(&config).unwrap()
 }
 
 pub fn randomize(enabled_game_traits: Vec<AllTraits>) -> Vec<String> {
