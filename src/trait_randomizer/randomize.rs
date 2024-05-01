@@ -56,7 +56,6 @@ impl Display for GamePacks {
 }
 
 pub fn randomize(enabled_game_traits: Vec<AllTraits>) -> Vec<String> {
-    println!("{:?}", enabled_game_traits);
     let mut personality_traits = enabled_game_traits
         .iter()
         .map(|game_trait| {

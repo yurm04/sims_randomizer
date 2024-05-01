@@ -3,7 +3,7 @@ use floem::{
     reactive::{create_rw_signal, provide_context, use_context, RwSignal},
     style::Style,
     view::View,
-    views::{dyn_stack, h_stack, label, scroll, v_stack, v_stack_from_iter, Decorators},
+    views::{container, dyn_stack, h_stack, label, scroll, v_stack, v_stack_from_iter, Decorators},
     widgets::button,
 };
 use strum::IntoEnumIterator; // 0.17.1
@@ -118,16 +118,6 @@ pub fn app_view() -> impl View {
                 )
             }))
             .style(|s| s.gap(0, 5)),
-            button(|| "Shuffle traits").on_click_cont(move |_| {
-                output.set(randomize(
-                    enabled_game_traits
-                        .get()
-                        .iter()
-                        .filter(|(_, selected)| *selected)
-                        .map(|(game_trait_name, _)| *game_trait_name)
-                        .collect::<Vec<AllTraits>>(),
-                ));
-            }),
         ))
         .style(|s| s.width_full().gap(0, 5)),
         v_stack((
@@ -144,14 +134,64 @@ pub fn app_view() -> impl View {
             )
             .style(|s| s.height_full().class(scroll::Handle, scrollbar_styles)),
         )),
-        dyn_stack(
-            move || output.get(),
-            move |randomized_traits| randomized_traits.clone(),
-            move |trait_name| label(move || trait_name.clone()),
+        container(
+            button(|| "Gimme traits!")
+                .on_click_cont(move |_| {
+                    output.set(randomize(
+                        enabled_game_traits
+                            .get()
+                            .iter()
+                            .filter(|(_, selected)| *selected)
+                            .map(|(game_trait_name, _)| *game_trait_name)
+                            .collect::<Vec<AllTraits>>(),
+                    ));
+                })
+                .style(|s| {
+                    s.background(Color::WHITE)
+                        // .box_shadow_color(Color::BLACK)
+                        .box_shadow_spread(-3)
+                        .box_shadow_h_offset(1)
+                        .box_shadow_v_offset(2)
+                        .box_shadow_blur(4)
+                        .hover(|s| {
+                            s.background(Color::WHITE)
+                                .box_shadow_spread(-1)
+                                .box_shadow_h_offset(1)
+                                .box_shadow_v_offset(2)
+                                .box_shadow_blur(4)
+                        })
+                        .active(|s| {
+                            s.background(Color::LIGHT_GRAY)
+                                .border_color(Color::BLACK)
+                                .box_shadow_spread(-4)
+                                .box_shadow_h_offset(1)
+                                .box_shadow_v_offset(2)
+                                .box_shadow_blur(4)
+                                .color(Color::BLACK)
+                        })
+                        .focus(|s| s.border_color(Color::BLACK))
+                }),
         )
-        .style(|s| s.flex_col()),
+        .style(|s| s.flex().justify_center()),
+        v_stack((
+            heading(String::from("Output")),
+            dyn_stack(
+                move || output.get(),
+                move |randomized_traits| randomized_traits.clone(),
+                move |trait_name| label(move || trait_name.clone()),
+            )
+            .style(|s| {
+                s.flex_col()
+                    .padding(3)
+                    .border(1)
+                    .border_radius(3)
+                    .height(48)
+                    .width_full()
+            }),
+        ))
+        .style(|s| s.width_full()),
     ))
-    .style(|s| s.gap(15, 0).margin(10))
+    .style(|s| s.gap(15, 0).margin(10).width_full())
 }
 
 fn scrollbar_styles(s: Style) -> Style {

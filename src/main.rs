@@ -33,7 +33,7 @@ fn main() {
             },
             Some(
                 WindowConfig::default()
-                    .size(Size::new(500.0, 300.0))
+                    .size(Size::new(550.0, 300.0))
                     .title("Yurms!"),
             ),
         )
